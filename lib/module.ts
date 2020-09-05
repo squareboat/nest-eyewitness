@@ -1,4 +1,10 @@
-import { Module, DynamicModule, Provider, Type } from '@nestjs/common';
+import {
+  Module,
+  DynamicModule,
+  Provider,
+  Type,
+  HttpModule,
+} from '@nestjs/common';
 import {
   EyewitnessOptions,
   EyewitnessAsyncOptions,
@@ -6,9 +12,11 @@ import {
 } from './interfaces';
 import { EYEWITNESS_OPTIONS } from './provider.map';
 import { EyewitnessService } from './service';
+import { HttpMethodService } from './httpMethod.service';
 
 @Module({
-  providers: [EyewitnessService],
+  imports: [HttpModule],
+  providers: [EyewitnessService, HttpMethodService],
   exports: [EyewitnessService],
 })
 export class EyewitnessModule {

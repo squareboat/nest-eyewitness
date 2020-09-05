@@ -25,9 +25,7 @@ export class EyewitnessService {
     Mailman.init().to(emails).subject(finalSubject).view(view, options).queue();
 
     if (webhookConfig) {
-      const { webhookOptions } = webhookConfig;
-
-      webhookOptions.forEach((e) => {
+      webhookConfig.forEach((e) => {
         EyewitnessService.httpAPICall(e.url, e.method, e.header, options);
       });
     }
@@ -39,27 +37,24 @@ export class EyewitnessService {
     header: Record<string, any>,
     payload: Record<string, any>
   ) {
-    switch (method) {
+    switch (method.toLowerCase()) {
       case "get": {
-        EyewitnessService.httpService.get(url, {
-          headers: header,
-          params: EyewitnessService.makeQueryParam(payload),
-        });
-        break;
+        return EyewitnessService.httpService.get(
+          `${url}${EyewitnessService.makeQueryParam(payload)}`,
+          {
+            headers: header,
+          }
+        );
       }
       case "post": {
-        EyewitnessService.httpService.post(url, {
+        return EyewitnessService.httpService.post(url, payload, {
           headers: header,
-          params: payload,
         });
-        break;
       }
       case "patch": {
-        EyewitnessService.httpService.patch(url, {
+        return EyewitnessService.httpService.patch(url, payload, {
           headers: header,
-          params: payload,
         });
-        break;
       }
     }
   }

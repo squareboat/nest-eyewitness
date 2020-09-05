@@ -1,9 +1,11 @@
-import { ModuleMetadata, Type } from '@nestjs/common/interfaces';
+import { ModuleMetadata, Type } from "@nestjs/common/interfaces";
+import { WebhookConfig } from "./webhookConfig";
 
 export interface EyewitnessOptions {
   emails: string[];
   view: string;
   subject?: string;
+  webhookConfig?: WebhookConfig;
 }
 
 export interface EyewitnessOptionsFactory {
@@ -11,7 +13,7 @@ export interface EyewitnessOptionsFactory {
 }
 
 export interface EyewitnessAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+  extends Pick<ModuleMetadata, "imports"> {
   name?: string;
   useExisting?: Type<EyewitnessOptions>;
   useClass?: Type<EyewitnessOptions>;

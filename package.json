@@ -1,12 +1,13 @@
 {
   "name": "@squareboat/nest-eyewitness",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An easy way to send emails with stack trace whenever an error happens on the server for NestJS Applications. 💿💾",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "nestjs-error",
-    "nestjs-error-handling",
+    "nestjs-exception",
+    "nestjs-exception-reporting",
     "nestjs-error-reporting"
   ],
   "repository": {

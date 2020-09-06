@@ -1,4 +1,5 @@
 import { ModuleMetadata, Type } from "@nestjs/common/interfaces";
+import { MailmanOptions } from "@squareboat/nest-mailman";
 
 export enum WebhookSupportMethod {
   GET = "GET",
@@ -7,8 +8,8 @@ export enum WebhookSupportMethod {
 
 export interface WebhookOptions {
   url: string;
-  method: WebhookSupportMethod;
-  header: Record<string, any>;
+  method: keyof typeof WebhookSupportMethod;
+  header?: Record<string, any>;
   requestBuilder?: (payload: any) => Record<string, any>;
 }
 
@@ -18,8 +19,8 @@ export interface WebhookConfig {
 
 export interface EyewitnessOptions {
   emails: string[];
-  view: string;
   subject?: string;
+  mailman: MailmanOptions;
   webhookConfig?: WebhookOptions[];
 }
 
@@ -31,7 +32,7 @@ export interface EyewitnessAsyncOptions
   extends Pick<ModuleMetadata, "imports"> {
   name?: string;
   useExisting?: Type<EyewitnessOptions>;
-  useClass?: Type<EyewitnessOptions>;
+  useClass?: Type<EyewitnessOptionsFactory>;
   useFactory?: (
     ...args: any[]
   ) => Promise<EyewitnessOptions> | EyewitnessOptions;

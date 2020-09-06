@@ -4,6 +4,7 @@ import {
   Provider,
   Type,
   HttpModule,
+  Inject,
 } from "@nestjs/common";
 import {
   EyewitnessOptions,
@@ -13,10 +14,12 @@ import {
 import { EYEWITNESS_OPTIONS } from "./provider.map";
 import { EyewitnessService } from "./service";
 import { CustomHttpService } from "./http";
+import { MailmanModule } from "@squareboat/nest-mailman";
+import { MailmanConfigFactory } from "./mailmanConfig";
 
 @Module({
   imports: [HttpModule],
-  providers: [EyewitnessService, CustomHttpService],
+  providers: [EyewitnessService, CustomHttpService, MailmanConfigFactory],
   exports: [EyewitnessService],
 })
 export class EyewitnessModule {
@@ -28,8 +31,15 @@ export class EyewitnessModule {
     return {
       global: true,
       module: EyewitnessModule,
+      imports: [
+        MailmanModule.registerAsync({
+          useClass: MailmanConfigFactory,
+        }),
+      ],
+      exports: [MailmanConfigFactory],
       providers: [
         EyewitnessService,
+        MailmanConfigFactory,
         {
           provide: EYEWITNESS_OPTIONS,
           useValue: options,
@@ -46,9 +56,11 @@ export class EyewitnessModule {
       global: true,
       module: EyewitnessModule,
       providers: [
+        MailmanConfigFactory,
         this.createStorageOptionsProvider(options),
         EyewitnessService,
       ],
+      exports: [MailmanConfigFactory],
     };
   }
 

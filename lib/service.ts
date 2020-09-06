@@ -7,29 +7,40 @@ import { CustomHttpService } from "./http";
 import { Injectable, Inject, ArgumentsHost } from "@nestjs/common";
 import { EYEWITNESS_OPTIONS } from "./provider.map";
 import { Mailman } from "@squareboat/nest-mailman";
+import { TEMPLATE } from "./resources/template";
 
 @Injectable()
 export class EyewitnessService {
   private static config: EyewitnessOptions;
-  constructor(@Inject(EYEWITNESS_OPTIONS) private config: EyewitnessOptions) {
+  constructor(@Inject(EYEWITNESS_OPTIONS) config: EyewitnessOptions) {
     EyewitnessService.config = config;
   }
 
-  static alert(exception: any, host: ArgumentsHost) {
-    const { emails, view, subject, webhookConfig } = EyewitnessService.config;
+  static getConfig(): EyewitnessOptions {
+    return EyewitnessService.config;
+  }
+
+  static async alert(exception: any, host: ArgumentsHost): Promise<void> {
+    const { emails, subject, webhookConfig } = EyewitnessService.config;
     const payload = this.buildPayload(exception, host);
     const finalSubject = (subject || ":error Error Captured").replace(
       ":error",
       payload.exception.name
     );
 
-    Mailman.init().to(emails).subject(finalSubject).view(view, payload).queue();
+    Mailman.init()
+      .to(emails)
+      .subject(finalSubject)
+      .template(TEMPLATE, payload)
+      .send();
 
     if (Array.isArray(webhookConfig) && webhookConfig.length > 0) {
       webhookConfig.forEach((e) => {
         EyewitnessService.handleAPICall(e, payload);
       });
     }
+
+    return;
   }
 
   static handleAPICall(
@@ -40,7 +51,7 @@ export class EyewitnessService {
     let httpCallOptions = {
       url: url,
       payload: defaultPayload,
-      header: header,
+      header: header || {},
     };
 
     if (webhookOptions.requestBuilder) {

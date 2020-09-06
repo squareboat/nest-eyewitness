@@ -1,4 +1,5 @@
 import { Injectable, HttpService } from "@nestjs/common";
+import * as querystring from "query-string";
 
 @Injectable()
 export class CustomHttpService {
@@ -26,9 +27,12 @@ export class CustomHttpService {
   }) {
     const { url, payload, header } = httpCallOptions;
     return CustomHttpService.httpSerice
-      .get(`${url}${CustomHttpService.makeQueryParam(payload)}`, {
-        headers: header,
-      })
+      .get(
+        `${url}?${querystring.stringify(payload, { arrayFormat: "bracket" })}`,
+        {
+          headers: header,
+        }
+      )
       .toPromise()
       .then((response: Record<string, any>) => {
         return response;

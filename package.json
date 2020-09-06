@@ -35,11 +35,11 @@
     "@nestjs/common": "^7.4.2",
     "@nestjs/core": "^7.4.2",
     "@types/node": "^14.0.27",
-    "typescript": "^3.9.7",
-    "@squareboat/nest-mailman": "0.0.4"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@squareboat/nest-mailman": "0.0.5"
+    "@squareboat/nest-mailman": "^0.1.0",
+    "query-string": "^6.13.1"
   },
   "peerDependencies": {
     "@nestjs/common": "^6.7.0 || ^7.0.0",

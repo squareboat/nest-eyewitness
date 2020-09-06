@@ -4,19 +4,19 @@ import {
   Provider,
   Type,
   HttpModule,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   EyewitnessOptions,
   EyewitnessAsyncOptions,
   EyewitnessOptionsFactory,
-} from './interfaces';
-import { EYEWITNESS_OPTIONS } from './provider.map';
-import { EyewitnessService } from './service';
-import { HttpMethodService } from './httpMethod.service';
+} from "./interfaces";
+import { EYEWITNESS_OPTIONS } from "./provider.map";
+import { EyewitnessService } from "./service";
+import { CustomHttpService } from "./http";
 
 @Module({
   imports: [HttpModule],
-  providers: [EyewitnessService, HttpMethodService],
+  providers: [EyewitnessService, CustomHttpService],
   exports: [EyewitnessService],
 })
 export class EyewitnessModule {
@@ -53,7 +53,7 @@ export class EyewitnessModule {
   }
 
   private static createStorageOptionsProvider(
-    options: EyewitnessAsyncOptions,
+    options: EyewitnessAsyncOptions
   ): Provider {
     if (options.useFactory) {
       return {

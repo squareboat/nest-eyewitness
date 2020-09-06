@@ -1,5 +1,20 @@
 import { ModuleMetadata, Type } from "@nestjs/common/interfaces";
-import { WebhookOptions } from "./webhookOptions";
+
+export enum WebhookSupportMethod {
+  GET = "GET",
+  POST = "POST",
+}
+
+export interface WebhookOptions {
+  url: string;
+  method: WebhookSupportMethod;
+  header: Record<string, any>;
+  requestBuilder?: (payload: any) => Record<string, any>;
+}
+
+export interface WebhookConfig {
+  webhookOptions: WebhookOptions[];
+}
 
 export interface EyewitnessOptions {
   emails: string[];

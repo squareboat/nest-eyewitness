@@ -1,9 +1,12 @@
-import { EyewitnessOptions, WebhookOptions } from "./interfaces";
-import { Injectable, Inject } from "@nestjs/common";
+import {
+  EyewitnessOptions,
+  WebhookOptions,
+  WebhookSupportMethod,
+} from "./interfaces";
+import { CustomHttpService } from "./http";
+import { Injectable, Inject, ArgumentsHost } from "@nestjs/common";
 import { EYEWITNESS_OPTIONS } from "./provider.map";
 import { Mailman } from "@squareboat/nest-mailman";
-import { HttpMethodService } from "./httpMethod.service";
-import { WebhookSupportMethod } from "./webhookSupportMethod.enu";
 
 @Injectable()
 export class EyewitnessService {
@@ -12,18 +15,19 @@ export class EyewitnessService {
     EyewitnessService.config = config;
   }
 
-  static alert(options: Record<string, any>) {
+  static alert(exception: any, host: ArgumentsHost) {
     const { emails, view, subject, webhookConfig } = EyewitnessService.config;
+    const payload = this.buildPayload(exception, host);
     const finalSubject = (subject || ":error Error Captured").replace(
       ":error",
-      options.exception.name
+      payload.exception.name
     );
 
-    Mailman.init().to(emails).subject(finalSubject).view(view, options).queue();
+    Mailman.init().to(emails).subject(finalSubject).view(view, payload).queue();
 
-    if (webhookConfig) {
+    if (Array.isArray(webhookConfig) && webhookConfig.length > 0) {
       webhookConfig.forEach((e) => {
-        EyewitnessService.handleAPICall(e, options);
+        EyewitnessService.handleAPICall(e, payload);
       });
     }
   }
@@ -43,10 +47,36 @@ export class EyewitnessService {
       httpCallOptions.payload = webhookOptions.requestBuilder(defaultPayload);
     }
 
-    if (method.toLowerCase() == WebhookSupportMethod.GET) {
-      return HttpMethodService.get(httpCallOptions);
-    } else {
-      return HttpMethodService.post(httpCallOptions);
+    if (method == WebhookSupportMethod.GET) {
+      return CustomHttpService.get(httpCallOptions);
     }
+    return CustomHttpService.post(httpCallOptions);
+  }
+
+  static buildPayload(
+    exception: any,
+    host: ArgumentsHost
+  ): Record<string, any> {
+    const ctx = host.switchToHttp();
+    const request = ctx.getRequest<any>();
+
+    return {
+      exception: {
+        name: exception.constructor.name,
+        message: exception.message,
+        stack: exception.stack.toString(),
+      },
+      request: {
+        timestamp: new Date().toString(),
+        headers: JSON.stringify(request.headers),
+        payload: JSON.stringify({
+          ...request.query,
+          ...request.body,
+          ...request.params,
+        }),
+        url:
+          request.protocol + "://" + request.get("host") + request.originalUrl,
+      },
+    };
   }
 }

@@ -1,9 +1,10 @@
 import { Injectable, HttpService } from "@nestjs/common";
+
 @Injectable()
-export class HttpMethodService {
+export class CustomHttpService {
   private static httpSerice: HttpService;
   constructor(private httpService: HttpService) {
-    HttpMethodService.httpSerice = httpService;
+    CustomHttpService.httpSerice = httpService;
   }
 
   static makeQueryParam = (payload: Record<string, any>) => {
@@ -20,36 +21,36 @@ export class HttpMethodService {
 
   static get(httpCallOptions: {
     url: string;
-    payload?: Record<string, any>;
-    header?: Record<string, any>;
+    payload: Record<string, any>;
+    header: Record<string, any>;
   }) {
     const { url, payload, header } = httpCallOptions;
-    return HttpMethodService.httpSerice
-      .get(`${url}${HttpMethodService.makeQueryParam(payload)}`, {
+    return CustomHttpService.httpSerice
+      .get(`${url}${CustomHttpService.makeQueryParam(payload)}`, {
         headers: header,
       })
       .toPromise()
-      .then((response) => {
+      .then((response: Record<string, any>) => {
         return response;
       })
-      .catch((error) => {
+      .catch((error: Record<string, any>) => {
         throw error;
       });
   }
 
   static post(httpCallOptions: {
     url: string;
-    payload?: Record<string, any> | string;
-    header?: Record<string, any>;
+    payload: Record<string, any> | string;
+    header: Record<string, any>;
   }) {
     const { url, payload, header } = httpCallOptions;
-    return HttpMethodService.httpSerice
+    return CustomHttpService.httpSerice
       .post(url, payload, { headers: header })
       .toPromise()
-      .then((response) => {
+      .then((response: Record<string, any>) => {
         return response;
       })
-      .catch((error) => {
+      .catch((error: Record<string, any>) => {
         throw error;
       });
   }

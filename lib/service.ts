@@ -21,21 +21,24 @@ export class EyewitnessService {
   }
 
   static async alert(exception: any, host: ArgumentsHost): Promise<void> {
-    const { emails, subject, webhookConfig } = EyewitnessService.config;
+    const { emails, subject, webhooks } = EyewitnessService.config;
     const payload = this.buildPayload(exception, host);
     const finalSubject = (subject || ":error Error Captured").replace(
       ":error",
       payload.exception.name
     );
 
-    Mailman.init()
+    await Mailman.init()
       .to(emails)
       .subject(finalSubject)
       .template(TEMPLATE, payload)
       .send();
 
-    if (Array.isArray(webhookConfig) && webhookConfig.length > 0) {
-      webhookConfig.forEach((e) => {
+    /**
+     * Run webhooks mentioned in the config
+     */
+    if (Array.isArray(webhooks) && webhooks.length > 0) {
+      webhooks.forEach((e) => {
         EyewitnessService.handleAPICall(e, payload);
       });
     }

@@ -29,6 +29,7 @@ export class EyewitnessModule {
    */
   static register(options: EyewitnessOptions): DynamicModule {
     return {
+      global: true,
       module: EyewitnessModule,
       imports: [
         MailmanModule.registerAsync({
@@ -52,6 +53,7 @@ export class EyewitnessModule {
    */
   static registerAsync(options: EyewitnessAsyncOptions): DynamicModule {
     return {
+      global: true,
       module: EyewitnessModule,
       providers: [
         MailmanConfigFactory,

@@ -22,7 +22,6 @@ export class Eyewitness {
    * @param host
    */
   static watch(exception: any, host: ArgumentsHost) {
-    console.log("EYEWITNESS RUNNING");
     if (Eyewitness.doNotReportExceptions.includes(exception.constructor.name)) {
       return;
     }

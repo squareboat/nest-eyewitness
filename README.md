@@ -9,10 +9,15 @@ Be the first one to know about the error as soon as it happens and take action.
 - ✅ Email first error reporter
 - ✅ Comprehensive support for custom webhooks
 - ✅ Access to complete stack trace for easy debugging and decision making
+- ✅ Fast Integration and comprehensive documentation
 
 For complete documentation, head over to [our site](https://opensource.squareboat.com/nest-eyewitness).
 
 ---
+
+## Contributing
+
+Please see our contributing [guidelines](./CONTRIBUTING.md).
 
 ## About Us
 

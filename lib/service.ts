@@ -6,7 +6,7 @@ import {
 import { CustomHttpService } from "./http";
 import { Injectable, Inject, ArgumentsHost } from "@nestjs/common";
 import { EYEWITNESS_OPTIONS } from "./provider.map";
-import { Mailman } from "@squareboat/nest-mailman";
+import { Mailman, MailMessage } from "@squareboat/nest-mailman";
 import { TEMPLATE } from "./resources/template";
 
 @Injectable()
@@ -28,11 +28,11 @@ export class EyewitnessService {
       payload.exception.name
     );
 
-    await Mailman.init()
-      .to(emails)
+    const mail = MailMessage.init()
       .subject(finalSubject)
-      .template(TEMPLATE, payload)
-      .send();
+      .raw(TEMPLATE, payload);
+
+    await Mailman.init().to(emails).send(mail);
 
     /**
      * Run webhooks mentioned in the config

@@ -40,7 +40,7 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@squareboat/nest-mailman": "^0.1.0",
+    "@squareboat/nest-mailman": "^0.1.9",
     "query-string": "^6.13.1"
   },
   "peerDependencies": {
